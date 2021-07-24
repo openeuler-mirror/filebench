@@ -1,6 +1,6 @@
 Name:           filebench
 Version:        1.4.9.1
-Release:        1
+Release:        2
 Summary:        A model based file system workload generator
 
 License:        CDDL-1.0
@@ -22,7 +22,7 @@ for detailed workload specification.
 
 
 %prep
-%setup -q
+%autosetup -p 1
 
 
 %build
@@ -46,5 +46,8 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jul 07 2021 wangxiaomeng <wangxiaomeng@kylinos.cn> 1.4.9.1-2
+- chang to autosetup
+
 * Tue Jun 29 2021 sunligang <sunligang@kylinos.cn> 1.4.9.1-1 
 - initial package
