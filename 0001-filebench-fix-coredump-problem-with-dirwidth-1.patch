@@ -1,0 +1,37 @@
+From 14aee810d4c310f6ad101fe3e116e6c5adfbd79a Mon Sep 17 00:00:00 2001
+From: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Date: Mon, 8 Feb 2021 15:25:46 +0800
+Subject: [PATCH] filebench: fix coredump problem with dirwidth=1
+
+If we set dirwidth=1 when defining fileset, run
+'filebench -f <wml-test>.f' will cause coredump.
+Because we set fileset->fs_meandepth in fileset_populate() as follows,
+$ fileset->fs_meandepth=log(entries+leafdirs)/log(meandirwidth).
+where meandirwidth is equal to 1 as same with dirwidth in <wml-test>.f.
+So fileset->fs_meandepth is set to inf, which will cause endless
+recursion of fileset_populate_subdir(). Finally, coredump occurs.
+
+Here, we will use a little bias (0.1) instead of log(1) when
+meandirwidth is equal to 1.
+
+Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+---
+ fileset.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fileset.c b/fileset.c
+index 1453f8d..6f82cd9 100644
+--- a/fileset.c
++++ b/fileset.c
+@@ -1660,7 +1660,7 @@ fileset_populate(fileset_t *fileset)
+ 	 *	# ave size of file
+ 	 *	max size of file
+ 	 */
+-	fileset->fs_meandepth = log(entries+leafdirs) / log(meandirwidth);
++	fileset->fs_meandepth = log(entries+leafdirs) / ((meandirwidth == 1) ? 0.1 : log(meandirwidth));
+ 
+ 	/* Has a random variable been supplied for dirdepth? */
+ 	if (fileset->fs_dirdepthrv) {
+-- 
+1.8.3.1
+
