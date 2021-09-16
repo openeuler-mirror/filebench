@@ -1,11 +1,13 @@
 Name:           filebench
 Version:        1.4.9.1
-Release:        2
+Release:        3
 Summary:        A model based file system workload generator
 
 License:        CDDL-1.0
 URL:            http://github.com/filebench
 Source0:        https://github.com/filebench/filebench/archive/refs/tags/%{version}.tar.gz
+
+Patch1:		0001-filebench-fix-coredump-problem-with-dirwidth-1.patch 
 
 BuildRequires: automake
 BuildRequires: autoconf
@@ -46,6 +48,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jul 24 2021 Zhiqiang Liu <liuzhiqiang26@huawei.com> 1.4.9.1-3
+- fix one coredump problem with dirwidth=1
+
 * Wed Jul 07 2021 wangxiaomeng <wangxiaomeng@kylinos.cn> 1.4.9.1-2
 - chang to autosetup
 
